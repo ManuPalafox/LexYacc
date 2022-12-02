@@ -14,7 +14,7 @@
 ## Introduccion
 El mandato lex ayuda a escribir un programa de lenguaje C que puede recibir y convertir la entrada de corriente de caracteres en acciones de programa.
 
-Para utilizar el mandato lex , debe proporcionar o escribir un archivo de especificación que contenga:
+~~Para utilizar el mandato lex , debe proporcionar o escribir un archivo de especificación que contenga:
 
 Expresiones regulares ampliadas
 Patrones de caracteres que reconoce el analizador léxico generado.
@@ -70,15 +70,97 @@ Yacc:
 ![](https://github.com/ManuPalafox/LexYacc/blob/main/YaccLecImg.jpeg
 )
 ## Desarrollo
-#### Explicacion del codigo
+#### Numero Par
+Para el codigo de nueros pares dentro de las reglas de produccion se encuentra:
+
+%%
+		SO{
+		cx = 0 ;
+        cy = 0 ;
+
+        n = strlen($1) ;
+
+        for(i=0; i<n; i++) {
+            if($1[i]=='0') cx++ ;
+            else if($1[i]=='1') cy++ ;
+        }
+        if(cx % 2 == 0 || cy % 2 == 0) {
+            printf("Cadena aceptada", $1);
+            exit(-1) ;
+        }
+        else {
+            printf("Cadena rechazada", $1);
+            exit(-1);
+        }
+    } ;
+    O: A {$$ = $1;}
+    ;
+%%
+En donde cada que llegue un 0 ira contando con un bucle for el largo de los mismos asi como ir comprobando el modulo de las variables cx y cy para ver si es un modulo 0 donde esto indicaria que son par.
+
+#### Conversion Bnario a Hexadecimal
+En el siguiente codigo dentro de las reglas de produccion tenemos lo siguiente:
+
+    S: OUT {
+        n = strlen($1) ;
+        masbit($1, k) ;
+        j = k - 1 ;
+        for(i = n - 1; i >= 0; i--) {
+            while(j >= 0) {
+                sg[i][j] = $1[i];
+                if(i == (j * 4) - 1) {
+                    j-- ;
+                }
+                printf("%s", sg[i][j]);
+            }
+        }
+    }
+    ;
+    OUT: BIN {$$ = $1;};
+
+Cada que empata un digito con la regla de produccion este se mandara a convertir a hexadecimal mediante la funcion masbit donde se le pasan como parametros el digito empatado y la variable de control K.
+
+###Buscar los numeros capicuas existentes entre el 0-1000
+
+De igual forma debemos empezar con las reglas de produccion, siendo las siguientes:
+
+	S : E {
+		flag = 0;
+        k = strlen($1) - 1;
+        if (k % 2 != 0) {
+
+            for (i = 0; i <= k / 2; i++) {
+                if ($1[i] == $1[k - i]) {} else {
+                    flag = 1;
+                }
+            }
+             if (flag == 1) printf("%s no es capicua\n", $1);
+                else printf("%s si es capicua\n", $1);
+
+            exit(0);
+
+        } else {
+
+            for (i = 0; i < k / 2; i++) {
+                if ($1[i] == $1[k - i]) {} else {
+                    flag = 1;
+                }
+            }
+            if (flag == 1) printf("El numero no es capicua\n", $1);
+            else printf("El numero es capicua", $1);
+
+            exit(0);
+
+        }
+	}
+	E : STR {$$ = $1;}
+
+Observamos que mediante un bucle for cada que empata la cadena ingresada con alguna regla de produccion se manda a analizar los numeros capicuos comprendidos en el rango que el usuario determino utilizando las reglas de produccion antes vistas.
 
 
 ## Conclusion
 
-**Sanchez Palafox Manuel:** 
-
-**Caballero Perdomo Axel Lennyn**
-
+Podemos concluir que es de gran utilidad las herramientas de yacc y Flex debido a su versatibilidad y confiabilidad, de los programas mas dificiles que pudimos hacer fue el de encontrar los numeros capicuas, donde presentamos retrasos generando las reglas de produccion.
 
 ## Bibliografias
 [Uso de Lex](https://www.ibm.com/docs/es/aix/7.3?topic=information-generating-lexical-analyzer-lex-command)
